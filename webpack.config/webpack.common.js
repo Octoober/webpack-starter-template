@@ -1,51 +1,36 @@
-const Path = require('path');
-const Webpack = require('webpack');
-
-
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const
+    Webpack = require('webpack'),
+    CleanWebpackPlugin = require('clean-webpack-plugin'),
+    CopyWebpackPlugin = require('copy-webpack-plugin'),
+    HtmlIncludes = require('./modules/html-includes'),
+    rootDir = your_path => require('path').resolve(__dirname, your_path)
 
 module.exports = {
     entry: {
-        app: Path.resolve(__dirname, '../src/js/app.js')
+        app: rootDir('../src/js/app.js')
     },
+
     output: {
-        path: Path.resolve(__dirname, '../dist'),
-        filename: 'js/[name].js'
+        path: rootDir('../dist')
     },
-    context: Path.resolve(__dirname, '../src'),
+
+    context: rootDir('../src'),
 
     plugins: [
-        new CleanWebpackPlugin('dist', {root: Path.resolve(__dirname, '..')}),
-        new CopyWebpackPlugin([
-            {
-                from: Path.resolve(__dirname, '../src/img'),
-                to: Path.resolve(__dirname, '../dist/img'),
-            }
-        ]),
-        // new HtmlWebpackPlugin({
-        //     hash: true,
-        //     template: Path.resolve(__dirname, '../src/index.html'),
-        //     filename: 'index.html'
-        // }),
-        // new HtmlWebpackPlugin({
-        //     template: Path.resolve(__dirname, '../src/page.html'),
-        //     filename: 'page.html'
-        // }),
-        new HtmlWebpackPlugin({
-            template: '../src/index.twig',
-            filename: 'index.html'
-        }),
+        new CleanWebpackPlugin('dist', { root: rootDir('..') }),
+        new CopyWebpackPlugin([{
+            from: rootDir('../src/img'),
+            to: rootDir('../dist/img'),
+        }]),
         new Webpack.ProvidePlugin({
-            "$":"jquery",
-            "jQuery":"jquery",
-            "window.jQuery":"jquery"
+            "$": "jquery",
+            "jQuery": "jquery",
+            "window.jQuery": "jquery"
         }),
-    ],
+    ].concat(HtmlIncludes),
+
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.mjs$/,
                 include: /node_modules/,
                 type: 'javascript/auto',
@@ -54,11 +39,6 @@ module.exports = {
                 test: /\.twig$/,
                 loader: 'twig-loader'
             },
-            // {
-            //     test: /\.html/,
-            //     include: Path.resolve(__dirname, '../src/templates'),
-            //     use: ["raw-loader"]
-            // },
             {
                 test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
                 use: {

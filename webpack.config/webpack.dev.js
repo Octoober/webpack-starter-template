@@ -1,8 +1,9 @@
-const Path = require('path');
-const Webpack = require('webpack');
-const merge = require('webpack-merge');
-const autoprefixer = require('autoprefixer');
-const common = require('./webpack.common.js');
+const
+    path = require('path'),
+    Webpack = require('webpack'),
+    merge = require('webpack-merge'),
+    common = require('./webpack.common.js'),
+    rootDir = your_path => path.resolve(__dirname, your_path)
 
 module.exports = merge(common, {
     mode: 'development',
@@ -12,10 +13,15 @@ module.exports = merge(common, {
         chunkFilename: 'js/[name].chunk.js'
     },
 
-    // devServer: {
-    //     contentBase: Path.resolve(__dirname, '../src'),
-    //     port: 8080
-    // },
+    devServer: {
+        contentBase: rootDir('../src'),
+        port: 8080,
+        overlay: {
+            warnings: true,
+            errors: true
+        }
+    },
+
     plugins: [
         new Webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('development')
@@ -23,8 +29,7 @@ module.exports = merge(common, {
     ],
 
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.js$/,
                 exclude: /(node_modules)/,
                 use: {
@@ -32,9 +37,8 @@ module.exports = merge(common, {
                 }
             },
             {
-                test: /\.sass$/,
-                use: [
-                    {
+                test: /\.(sass|scss)$/,
+                use: [{
                         loader: 'style-loader',
                     },
                     {
@@ -46,20 +50,14 @@ module.exports = merge(common, {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            plugins: [
-                                autoprefixer({
-                                    browsers:['ie >= 8', 'last 4 version']
-                                })
-                            ],
                             sourceMap: true
                         }
                     },
                     {
                         loader: 'sass-loader',
-                        // options: {}
                     }
                 ]
             }
         ]
     }
-});
+})

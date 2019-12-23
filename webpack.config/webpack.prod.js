@@ -1,62 +1,48 @@
-const Path = require('path');
-const Webpack = require('webpack');
-const merge = require('webpack-merge');
-const common = require('./webpack.common.js');
-const autoprefixer = require('autoprefixer');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const cssnano = require('cssnano');
+const
+    Webpack = require('webpack'),
+    merge = require('webpack-merge'),
+    common = require('./webpack.common.js'),
+    MiniCssExtractPlugin = require('mini-css-extract-plugin'),
+
+    rootDir = your_path => require('path').resolve(__dirname, your_path)
 
 module.exports = merge(common, {
     mode: 'production',
-    // devtool: 'source-map',
     devtool: false,
+
     output: {
-        filename: 'js/[name].[chunkhash:8].js',
-        chunkFilename: 'js/[name].[chunkhash:8].chunk.js'
+        filename: './js/[name].[chunkhash:8].js',
+        chunkFilename: './js/[name].[chunkhash:8].chunk.js'
     },
 
     performance: {
         hints: false
     },
 
-    optimization: {
-        minimizer: [
-            new UglifyJsPlugin({
-                test: /\.js(\?.*)?$/i,
-                sourceMap: true,
-                uglifyOptions: {
-                    output: {
-                        comments: false
-                    }
-                }
-            })
-        ],
-    },
-    // context: Path.resolve(__dirname, '../src'),
+    optimization: {},
+
     plugins: [
         new Webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production')
         }),
         new MiniCssExtractPlugin({
-            filename: './css/main.bundle.css'
+            filename: './css/[name].[hash].css',
+            chunkFilename: './css/[id].[hash].css'
         })
     ],
 
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.(js)$/,
                 exclude: /node_modules/,
                 use: 'babel-loader'
             },
             {
-                test: /\.sass$/,
-                use: [
-                    {
+                test: /\.(sass|scss)$/,
+                use: [{
                         loader: MiniCssExtractPlugin.loader,
                         options: {
-                            publicPath: '../'
+                            publicPath: rootDir('../')
                         }
                     },
                     {
@@ -68,21 +54,7 @@ module.exports = merge(common, {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            plugins: [
-                                autoprefixer({
-                                    browsers: ['ie >= 8', 'last 4 version']
-                                }),
-                                cssnano({
-                                    preset: [
-                                        'default',
-                                        {
-                                            discardComments: {
-                                                removeAll: true
-                                            }
-                                        }
-                                    ]
-                                })
-                            ]
+                            sourceMap: true
                         }
                     },
                     {
@@ -92,4 +64,4 @@ module.exports = merge(common, {
             }
         ]
     }
-});
+})
