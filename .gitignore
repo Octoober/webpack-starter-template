@@ -1,6 +1,14 @@
-/node_modules/
-/dist/
-/.git/
-/.idea/
+# Folders
+node_modules
+dist
+.git
+.idea
+.vscode
 
+# Files
 package-lock.json
+
+# Ignore extensions
+*.vi
+*.log
+*.err

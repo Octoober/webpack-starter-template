@@ -3,7 +3,6 @@ const
     merge = require('webpack-merge'),
     common = require('./webpack.common.js'),
     MiniCssExtractPlugin = require('mini-css-extract-plugin'),
-
     rootDir = your_path => require('path').resolve(__dirname, your_path)
 
 module.exports = merge(common, {
