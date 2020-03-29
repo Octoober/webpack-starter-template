@@ -18,7 +18,11 @@ module.exports = merge(common, {
         hints: false
     },
 
-    optimization: {},
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        }
+    },
 
     plugins: [
         new Webpack.DefinePlugin({
@@ -37,7 +41,7 @@ module.exports = merge(common, {
                 use: 'babel-loader'
             },
             {
-                test: /\.(sass|scss)$/,
+                test: /\.(sass|scss|css)$/,
                 use: [{
                         loader: MiniCssExtractPlugin.loader,
                         options: {

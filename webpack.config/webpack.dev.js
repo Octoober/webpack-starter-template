@@ -3,6 +3,7 @@ const
     Webpack = require('webpack'),
     merge = require('webpack-merge'),
     common = require('./webpack.common.js'),
+    MiniCssExtractPlugin = require('mini-css-extract-plugin'),
     rootDir = your_path => path.resolve(__dirname, your_path)
 
 module.exports = merge(common, {
@@ -25,6 +26,9 @@ module.exports = merge(common, {
     plugins: [
         new Webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('development')
+        }),
+        new MiniCssExtractPlugin({
+            filename: "[name].css"
         })
     ],
 
@@ -37,10 +41,10 @@ module.exports = merge(common, {
                 }
             },
             {
-                test: /\.(sass|scss)$/,
-                use: [{
-                        loader: 'style-loader',
-                    },
+                test: /\.(sass|scss|css)$/,
+                use: [
+                    'style-loader',
+                    MiniCssExtractPlugin.loader,
                     {
                         loader: 'css-loader',
                         options: {
